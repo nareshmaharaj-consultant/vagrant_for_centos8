@@ -35,4 +35,16 @@ Vagrant.configure("2") do |config|
     server2.vm.hostname = "m2.aerospike.training"
     server2.vm.network :private_network, ip: "192.168.56.152"
   end
+  
+  config.vm.define "m3" do |server3|
+    server3.vm.provider "virtualbox" do |vb|
+      vb.customize ["modifyvm", :id, "--cpus", "2"]
+      vb.customize ['modifyvm', :id, '--macaddress1', '080027000053']
+      vb.customize ['modifyvm', :id, '--natnet1', '10.0.53.0/24']
+      vb.name = "m3"
+      vb.memory = 4096
+    end
+    server3.vm.hostname = "m3.aerospike.training"
+    server3.vm.network :private_network, ip: "192.168.56.153"
+  end
 end
