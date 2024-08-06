@@ -3,6 +3,13 @@
 #  Vagrant::DEFAULT_SERVER_URL.replace('https://vagrantcloud.com')
 #end
 
+NUM_WORKER_NODES=3
+METRIC_NODE_ID=NUM_WORKER_NODES + 1
+IP_NW="192.168.56."
+IP_START=150
+
+ALLOW_METRICS = true
+
 Vagrant.configure("2") do |config|
   config.vm.box = "generic/centos8"
   config.vm.box_check_update = false
@@ -11,40 +18,36 @@ Vagrant.configure("2") do |config|
   config.vm.provision "shell", path: "swap.off.sh"
   config.vm.provision "shell", path: "add-fw-rules.sh"
   config.vm.provision "shell", path: "jdk11.sh"
+  config.vm.provision "shell", path: "tcp_keep_alive.sh"
 
-  config.vm.define "m1" do |server1|
-    server1.vm.provider "virtualbox" do |vb|
-      vb.customize ["modifyvm", :id, "--cpus", "2"]
-      vb.customize ['modifyvm', :id, '--macaddress1', '080027000051']
-      vb.customize ['modifyvm', :id, '--natnet1', '10.0.51.0/24']
-      vb.name = "m1"
-      vb.memory = 4096
+  (1..NUM_WORKER_NODES).each do |i|
+    config.vm.define "asd0#{i}" do |node|
+      node.vm.hostname = "asd0#{i}"
+      node.vm.network "private_network", ip: IP_NW + "#{IP_START + i}"
+      node.vm.provider "virtualbox" do |vb|
+        vb.customize ['modifyvm', :id, '--cableconnected1', 'on']
+        vb.customize ["modifyvm", :id, "--cpus", "2"]
+        vb.customize ['modifyvm', :id, '--macaddress1', "08002700005" + "#{i}"]
+        vb.customize ['modifyvm', :id, '--natnet1', "10.0.5" + "#{i}.0/24"]
+        vb.name = "asd0#{i}"
+        vb.memory = 4096
+      end
+      node.vm.provision "shell", path: "install_aerospike.sh"
     end
-    server1.vm.hostname = "m1.aerospike.training"
-    server1.vm.network :private_network, ip: "192.168.56.151"
   end
 
-  config.vm.define "m2" do |server2|
-    server2.vm.provider "virtualbox" do |vb|
-      vb.customize ["modifyvm", :id, "--cpus", "2"]
-      vb.customize ['modifyvm', :id, '--macaddress1', '080027000052']
-      vb.customize ['modifyvm', :id, '--natnet1', '10.0.52.0/24']
-      vb.name = "m2"
-      vb.memory = 4096
+  if ALLOW_METRICS
+    config.vm.define "obs0#{METRIC_NODE_ID}" do |node|
+      node.vm.hostname = "obs#{METRIC_NODE_ID}"
+      node.vm.network "private_network", ip: IP_NW + "#{METRIC_NODE_ID}"
+      node.vm.provider "virtualbox" do |vb|
+        vb.customize ["modifyvm", :id, "--cpus", "2"]
+        vb.customize ['modifyvm', :id, '--macaddress1', "08002700005" + "#{METRIC_NODE_ID}"]
+        vb.customize ['modifyvm', :id, '--natnet1', "10.0.5" + "#{METRIC_NODE_ID}.0/24"]
+        vb.name = "obs0#{METRIC_NODE_ID}"
+        vb.memory = 4096
+      end
+      node.vm.provision "shell", path: "install_ams.sh"
     end
-    server2.vm.hostname = "m2.aerospike.training"
-    server2.vm.network :private_network, ip: "192.168.56.152"
-  end
-  
-  config.vm.define "m3" do |server3|
-    server3.vm.provider "virtualbox" do |vb|
-      vb.customize ["modifyvm", :id, "--cpus", "2"]
-      vb.customize ['modifyvm', :id, '--macaddress1', '080027000053']
-      vb.customize ['modifyvm', :id, '--natnet1', '10.0.53.0/24']
-      vb.name = "m3"
-      vb.memory = 4096
-    end
-    server3.vm.hostname = "m3.aerospike.training"
-    server3.vm.network :private_network, ip: "192.168.56.153"
   end
 end
