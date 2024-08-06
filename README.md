@@ -5,3 +5,4 @@
 - To enable the hosts files to b updated automatically
   - vagrant plugin install vagrant-hostmanager ( once only )
   - vagrant hostmanager
+.
