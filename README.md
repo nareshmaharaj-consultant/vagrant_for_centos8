@@ -21,4 +21,5 @@ Will do the following for you on your local machine:
    * vagrant plugin install vagrant-hostmanager ( once only )
    *vagrant hostmanager ( ona single machine )
 
-Metrics server will be on http://192.168.56.[n]:3000 where n is the last server created namesd obs*
+- Set up the metrics server on http://192.168.56.[n]:3000 
+  - where n is the last server created namesd obs*
