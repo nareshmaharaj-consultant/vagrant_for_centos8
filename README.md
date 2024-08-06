@@ -1,11 +1,11 @@
-Edit the Vagrant file options:
+# Vagrant file options:
 
-NUM_WORKER_NODES=3
-METRIC_NODE_ID=NUM_WORKER_NODES + 1
-IP_NW="192.168.56."
-IP_START=150
+> NUM_WORKER_NODES=3
+> METRIC_NODE_ID=NUM_WORKER_NODES + 1
+> IP_NW="192.168.56."
+> IP_START=150
 
-vagrant_for_centos8
+## Vagrant_for_centos8
 Will do the following for you on your local machine:
 - create Aerospike nodes in a cluster including the Aerospike Metric Statck
 - Will Disable swap
@@ -15,4 +15,4 @@ Will do the following for you on your local machine:
    * vagrant plugin install vagrant-hostmanager ( once only )
    *vagrant hostmanager ( ona single machine )
 
-Metrics server will be on http://192.168.56.[n]:3000 where n is the last server names obs
+Metrics server will be on http://192.168.56.[n]:3000 where n is the last server created namesd obs*
