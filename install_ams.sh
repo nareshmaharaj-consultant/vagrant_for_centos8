@@ -1,1 +1,1 @@
-../install_ams.sh
+monitoring/install_ams.sh

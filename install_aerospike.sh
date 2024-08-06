@@ -1,1 +1,1 @@
-../install_aerospike.sh
+aerospike_versions/install_aerospike_7.x.sh
