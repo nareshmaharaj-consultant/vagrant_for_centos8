@@ -22,4 +22,4 @@ Will do the following for you on your local machine:
    *vagrant hostmanager ( ona single machine )
 
 - Set up the metrics server on http://192.168.56.[n]:3000 
-  - where n is the last server created namesd obs*
+  - where n is the last server created named obs*
